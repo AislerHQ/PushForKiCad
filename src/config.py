@@ -1,7 +1,7 @@
 import pcbnew
 
-baseUrl = 'http://localhost:3000'
-#baseUrl = 'https://aisler.net'
+# baseUrl = 'http://localhost:3000'
+baseUrl = 'https://aisler.net'
 commentLineIdx = 3
 pollingInterval = 0.5
 netlistFilename = 'netlist.ipc'

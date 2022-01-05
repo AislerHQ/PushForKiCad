@@ -154,11 +154,6 @@ class PushThread(Thread):
                     urls['callback']).content)['progress']
             self.log("Progress %i / 100" % progress)
 
-        # Clean up temporary files
-        self.log('Cleaning up...')
-        shutil.rmtree(temp_dir)
-        os.remove(temp_file)
-
         self.log("Redirected to %s, have fun!" % urls['redirect'])
         webbrowser.open(urls['redirect'])
 
