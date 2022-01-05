@@ -128,6 +128,7 @@ class PushThread(Thread):
         temp_file = shutil.make_archive(temp_file, 'zip', temp_dir)
         files = {'upload[file]': open(temp_file, 'rb')}
 
+        self.log('Pushing data...')
         if project_id:
             data = {}
             data['upload_url'] = baseUrl + '/p/' + project_id + '/uploads.json'
@@ -141,7 +142,6 @@ class PushThread(Thread):
             board.SetTitleBlock(title_block)
             self.log(f'Received new Project ID')
 
-        self.log('Pushing data...')
         rsp = requests.post(
             data['upload_url'], files=files, data={
                 'upload[title]': title_block.GetTitle()})

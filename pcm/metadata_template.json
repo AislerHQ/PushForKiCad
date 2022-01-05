@@ -1,0 +1,35 @@
+{
+    "$schema": "https://go.kicad.org/pcm/schemas/v1",
+    "name": "PushForKiCad",
+    "description": "Push your layout to AISLER with just one click",
+    "description_full": "This plugins offers the best way to push your layout to the AISLER Powerful Prototyping service. It takes care to properly export Gerber, Excellon, IPC Netlist and component list files in just one click.",
+    "identifier": "com.github.aislerhq.PushForKiCad",
+    "type": "plugin",
+    "author": {
+        "name": "AISLER B.V.",
+        "contact": {
+            "github": "https://github.com/aislerhq",
+            "web": "https://aisler.net",
+            "twitter": "https://twitter.com/aislerhq"
+        }
+    },    
+    "maintainer": {
+        "name": "AISLER B.V.",
+        "contact": {
+            "github": "https://github.com/aislerhq",
+            "web": "https://aisler.net",
+            "twitter": "https://twitter.com/aislerhq"
+        }
+    },
+    "license": "MIT",
+    "resources": {
+        "homepage": "https://github.com/aislerhq/PushForKiCad"
+    },
+    "versions": [
+        {
+            "version": "1.0.0",
+            "status": "stable",
+            "kicad_version": "6.00"
+        }
+    ]
+}
