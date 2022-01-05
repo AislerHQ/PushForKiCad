@@ -3,6 +3,6 @@ try:
     plugin = PushForKiCadPlugin()
     plugin.register()
 except Exception as e:
-    import logging    
+    import logging
     root = logging.getLogger()
     root.debug(repr(e))

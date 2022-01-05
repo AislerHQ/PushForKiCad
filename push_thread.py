@@ -10,7 +10,8 @@ import tempfile
 from threading import Thread
 from .result_event import *
 from .config import *
-        
+
+
 class PushThread(Thread):
     def __init__(self, wxObject):
         Thread.__init__(self)
@@ -23,13 +24,14 @@ class PushThread(Thread):
         board = pcbnew.GetBoard()
         title_block = board.GetTitleBlock()
         self.log(f'Pushing %s...' % title_block.GetTitle())
-        match = re.match('^AISLER Project ID: ([A-Z]{8})$', title_block.GetComment(commentLineIdx))
+        match = re.match(
+            '^AISLER Project ID: ([A-Z]{8})$',
+            title_block.GetComment(commentLineIdx))
         if match:
             project_id = match.group(1)
             self.log("Found existing Project ID %s" % project_id)
         else:
             project_id = False
-
 
         # Override a few design parameters as our CAM takes care of this
         settings = board.GetDesignSettings()
@@ -50,13 +52,16 @@ class PushThread(Thread):
         popt.SetUseGerberProtelExtensions(False)
         popt.SetUseAuxOrigin(True)
         popt.SetSubtractMaskFromSilk(False)
-        popt.SetDrillMarksType(0) # NO_DRILL_SHAPE
+        popt.SetDrillMarksType(0)  # NO_DRILL_SHAPE
 
         self.log('Plotting Gerber files...')
         for layer_info in plotPlan:
             if board.IsLayerEnabled(layer_info[1]):
                 pctl.SetLayer(layer_info[1])
-                pctl.OpenPlotfile(layer_info[0], pcbnew.PLOT_FORMAT_GERBER, layer_info[2])
+                pctl.OpenPlotfile(
+                    layer_info[0],
+                    pcbnew.PLOT_FORMAT_GERBER,
+                    layer_info[2])
                 pctl.PlotLayer()
 
         pctl.ClosePlot()
@@ -64,9 +69,13 @@ class PushThread(Thread):
         # Write excellon drill files
         self.log('Plotting Excellon files...')
         drlwriter = pcbnew.EXCELLON_WRITER(board)
-   
+
         # mirrot, header, offset, mergeNPTH
-        drlwriter.SetOptions(False, True, board.GetDesignSettings().GetAuxOrigin(), False)
+        drlwriter.SetOptions(
+            False,
+            True,
+            board.GetDesignSettings().GetAuxOrigin(),
+            False)
         drlwriter.SetFormat(False)
         drlwriter.CreateDrillandMapFilesSet(pctl.GetPlotDirName(), True, False)
 
@@ -74,7 +83,6 @@ class PushThread(Thread):
         self.log('Writting IPC Netlist for Smart Tests...')
         netlist_writer = pcbnew.IPC356D_WRITER(board)
         netlist_writer.Write(os.path.join(temp_dir, netlistFilename))
-
 
         # # Export component list
         self.log('Writting component list...')
@@ -118,7 +126,7 @@ class PushThread(Thread):
 
         # # Create ZIP file
         temp_file = shutil.make_archive(temp_file, 'zip', temp_dir)
-        files = {'upload[file]': open(temp_file, 'rb') }
+        files = {'upload[file]': open(temp_file, 'rb')}
 
         if project_id:
             data = {}
@@ -126,17 +134,24 @@ class PushThread(Thread):
         else:
             rsp = requests.get(baseUrl + '/p/new.json?ref=KiCadPush')
             data = json.loads(rsp.content)
-            title_block.SetComment(commentLineIdx, 'AISLER Project ID: ' + data['project_id'])
+            title_block.SetComment(
+                commentLineIdx,
+                'AISLER Project ID: ' +
+                data['project_id'])
             board.SetTitleBlock(title_block)
             self.log(f'Received new Project ID')
 
         self.log('Pushing data...')
-        rsp = requests.post(data['upload_url'], files=files, data={'upload[title]': title_block.GetTitle()})
+        rsp = requests.post(
+            data['upload_url'], files=files, data={
+                'upload[title]': title_block.GetTitle()})
         urls = json.loads(rsp.content)
         progress = 0
         while progress < 100:
             time.sleep(pollingInterval)
-            progress = json.loads(requests.get(urls['callback']).content)['progress']
+            progress = json.loads(
+                requests.get(
+                    urls['callback']).content)['progress']
             self.log("Progress %i / 100" % progress)
 
         # Clean up temporary files
@@ -146,10 +161,9 @@ class PushThread(Thread):
 
         self.log("Redirected to %s, have fun!" % urls['redirect'])
         webbrowser.open(urls['redirect'])
-        
+
         time.sleep(3)
         self.log(-1)
 
-    
     def log(self, msg):
         wx.PostEvent(self.wxObject, ResultEvent(msg))
