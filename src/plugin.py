@@ -11,34 +11,35 @@ class PushToStatusForm(wx.Frame):
             self,
             None,
             id=wx.ID_ANY,
-            title="Pushing to AISLER in progress...",
+            title=u"AISLER Push in progress...",
             pos=wx.DefaultPosition,
+            size=wx.DefaultSize,
             style=wx.DEFAULT_DIALOG_STYLE)
+
         self.SetSizeHints(wx.DefaultSize, wx.DefaultSize)
 
         bSizer1 = wx.BoxSizer(wx.VERTICAL)
-        self.textCtrl1 = wx.TextCtrl(
-            self,
-            wx.ID_ANY,
-            style=wx.TE_MULTILINE | wx.TE_READONLY | wx.HSCROLL,
-            size=(
-                485,
-                300))
-        bSizer1.Add(self.textCtrl1, 0, wx.ALL, 5)
+
+        self.m_gaugeStatus = wx.Gauge(
+            self, wx.ID_ANY, 100, wx.DefaultPosition, wx.Size(
+                300, 20), wx.GA_HORIZONTAL)
+        self.m_gaugeStatus.SetValue(0)
+        bSizer1.Add(self.m_gaugeStatus, 0, wx.ALL, 5)
 
         self.SetSizer(bSizer1)
         self.Layout()
+        bSizer1.Fit(self)
 
         self.Centre(wx.BOTH)
 
         EVT_RESULT(self, self.updateDisplay)
         PushThread(self)
 
-    def updateDisplay(self, msg):
-        if msg.data == -1:
+    def updateDisplay(self, status):
+        if status.data == -1:
             self.Destroy()
         else:
-            self.textCtrl1.write(msg.data + '\n')
+            self.m_gaugeStatus.SetValue(status.data)
 
 
 class PushForKiCadPlugin(pcbnew.ActionPlugin):

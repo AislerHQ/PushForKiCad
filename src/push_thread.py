@@ -23,13 +23,12 @@ class PushThread(Thread):
         _, temp_file = tempfile.mkstemp()
         board = pcbnew.GetBoard()
         title_block = board.GetTitleBlock()
-        self.log(f'Pushing %s...' % title_block.GetTitle())
+        self.report(10)
         match = re.match(
             '^AISLER Project ID: ([A-Z]{8})$',
             title_block.GetComment(commentLineIdx))
         if match:
             project_id = match.group(1)
-            self.log("Found existing Project ID %s" % project_id)
         else:
             project_id = False
 
@@ -54,7 +53,7 @@ class PushThread(Thread):
         popt.SetSubtractMaskFromSilk(False)
         popt.SetDrillMarksType(0)  # NO_DRILL_SHAPE
 
-        self.log('Plotting Gerber files...')
+        self.report(15)
         for layer_info in plotPlan:
             if board.IsLayerEnabled(layer_info[1]):
                 pctl.SetLayer(layer_info[1])
@@ -67,7 +66,7 @@ class PushThread(Thread):
         pctl.ClosePlot()
 
         # Write excellon drill files
-        self.log('Plotting Excellon files...')
+        self.report(20)
         drlwriter = pcbnew.EXCELLON_WRITER(board)
 
         # mirrot, header, offset, mergeNPTH
@@ -80,12 +79,12 @@ class PushThread(Thread):
         drlwriter.CreateDrillandMapFilesSet(pctl.GetPlotDirName(), True, False)
 
         # # Write netlist to enable Smart Tests
-        self.log('Writting IPC Netlist for Smart Tests...')
+        self.report(25)
         netlist_writer = pcbnew.IPC356D_WRITER(board)
         netlist_writer.Write(os.path.join(temp_dir, netlistFilename))
 
         # # Export component list
-        self.log('Writting component list...')
+        self.report(30)
         components = []
         if hasattr(board, 'GetModules'):
             footprints = list(board.GetModules())
@@ -128,19 +127,19 @@ class PushThread(Thread):
         temp_file = shutil.make_archive(temp_file, 'zip', temp_dir)
         files = {'upload[file]': open(temp_file, 'rb')}
 
-        self.log('Pushing data...')
+        self.report(40)
         if project_id:
             data = {}
             data['upload_url'] = baseUrl + '/p/' + project_id + '/uploads.json'
         else:
             rsp = requests.get(baseUrl + '/p/new.json?ref=KiCadPush')
             data = json.loads(rsp.content)
-            title_block.SetComment(
-                commentLineIdx,
-                'AISLER Project ID: ' +
-                data['project_id'])
-            board.SetTitleBlock(title_block)
-            self.log(f'Received new Project ID')
+            if not title_block.GetComment(commentLineIdx):
+                title_block.SetComment(
+                    commentLineIdx,
+                    'AISLER Project ID: ' +
+                    data['project_id'])
+                board.SetTitleBlock(title_block)
 
         rsp = requests.post(
             data['upload_url'], files=files, data={
@@ -152,13 +151,10 @@ class PushThread(Thread):
             progress = json.loads(
                 requests.get(
                     urls['callback']).content)['progress']
-            self.log("Progress %i / 100" % progress)
+            self.report(40 + progress / 1.7)
 
-        self.log("Redirected to %s, have fun!" % urls['redirect'])
         webbrowser.open(urls['redirect'])
+        self.report(-1)
 
-        time.sleep(3)
-        self.log(-1)
-
-    def log(self, msg):
-        wx.PostEvent(self.wxObject, ResultEvent(msg))
+    def report(self, status):
+        wx.PostEvent(self.wxObject, ResultEvent(status))
