@@ -16,5 +16,5 @@ Once the upload (which will only take a couple of seconds) is complete you can p
 ### Manual installation
 Download the latest release ZIP file from https://github.com/AislerHQ/PushForKiCad/releases after that open KiCad and open the "Plugin and Content Manager" from the main window. Install the ZIP file using "Install from File..." a the bottom of the window.
 
-####About AISLER
+#### About AISLER
 AISLER makes hardware less hard by providing simple electronics manufacturing for everyone. We are based in Europe and focus on amazingly affordable prices, super swift delivery and outstanding customer support. We are KiCad Platinum Sponsor as we donate a significant amount of our revenues made from KiCad designs back to the project.
