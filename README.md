@@ -13,6 +13,14 @@ When you click the AISLER Push-Button we will export your project's
 
 Once the upload (which will only take a couple of seconds) is complete you can place your order within less than one minute. If you iterate on your design and click the push button again, we will make sure your project is only stored as a new revision on our server.
 
+![](docs/demo.gif)
+
+### How do revisions work?
+On the initial push of a new layout the plugin adds a comment to comment line 3 inclduing a reference to the corresponding AISLER Project ID.
+![](docs/project_id.png)
+Each further push will add the current layout to the project as a new revision. If this is not desired, just remove the comment and a new project will be created.
+
+
 ### Manual installation
 Download the latest release ZIP file from https://github.com/AislerHQ/PushForKiCad/releases, within KiCad open the "Plugin and Content Manager" from the main window. Install the ZIP file using "Install from File..." a the bottom of the window.
 
