@@ -17,6 +17,7 @@ Once the upload (which will only take a couple of seconds) is complete you can p
 
 ### Installation
 Download the latest release ZIP file from https://github.com/AislerHQ/PushForKiCad/releases, within KiCad open the "Plugin and Content Manager" from the main window. Install the ZIP file using "Install from File..." a the bottom of the window.
+![](docs/manual_installation.png)
 
 ### How do revisions work?
 On the initial push of a new layout the plugin adds a comment to comment line 3 inclduing a reference to the corresponding AISLER Project ID.
