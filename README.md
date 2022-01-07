@@ -32,4 +32,4 @@ AISLER makes hardware less hard by providing simple electronics manufacturing fo
 
 [![AISLER Logo](https://aisler.net/logos/logo_medium.png)](https://aisler.net?mtm_campaign=github_pushforkicad)
 
-![KiCad Platinum Sponsor](https://cdn.aisler.net/packs/static/412c42e887d5762109ea.png)
+[![KiCad Platinum Sponsor](https://cdn.aisler.net/packs/static/412c42e887d5762109ea.png)](https://aisler.net?mtm_campaign=github_pushforkicad)
