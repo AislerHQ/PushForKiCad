@@ -19,7 +19,7 @@ Once the upload (– which will only take a couple of seconds –) is complete y
 Download the latest release ZIP file from https://github.com/AislerHQ/PushForKiCad/releases, within KiCad open the "Plugin and Content Manager" from the main window. Install the ZIP file using "Install from File..." a the bottom of the window.
 
 ### How do revisions work?
-On the initial push of a new layout the plugin adds a comment to comment line 3 inclduing a reference to the corresponding AISLER Project ID.
+On the initial push of a new layout, the plugin adds a comment to comment line 3 including a reference to the corresponding AISLER Project ID.
 ![Comment Line 3 added](docs/project_id.png)
 Each further push will add the current layout to the project as a new revision. If this is not desired, just remove the comment and a new project will be created.
 
