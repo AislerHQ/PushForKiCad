@@ -114,7 +114,7 @@ class PushThread(Thread):
                 'rotation': f.GetOrientation() / 10.0,
                 'side': layer,
                 'designator': f.GetReference(),
-                'mpn': f.GetProperty('mpn'),
+                'mpn': self.getMpnFromFootprint(f),
                 'pack': footprint_name,
                 'value': f.GetValue(),
                 'mount_type': mount_type
@@ -158,3 +158,9 @@ class PushThread(Thread):
 
     def report(self, status):
         wx.PostEvent(self.wxObject, ResultEvent(status))
+        
+    def getMpnFromFootprint(self, f):
+        keys = ['mpn', 'MPN', 'Mpn', 'AISLER_MPN']
+        for key in keys:
+            if f.HasProperty(key):
+                return f.GetProperty(key)
