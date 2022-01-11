@@ -139,7 +139,7 @@ class PushThread(Thread):
                     commentLineIdx,
                     'AISLER Project ID: ' +
                     data['project_id'])
-                board.SetTitleBlock(title_block)
+                pcbnew.Refresh()
 
         rsp = requests.post(
             data['upload_url'], files=files, data={
