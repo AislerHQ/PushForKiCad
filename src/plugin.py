@@ -37,6 +37,7 @@ class PushToStatusForm(wx.Frame):
 
     def updateDisplay(self, status):
         if status.data == -1:
+            pcbnew.Refresh()
             self.Destroy()
         else:
             self.m_gaugeStatus.SetValue(status.data)
