@@ -36,7 +36,7 @@ shutil.copytree(src_path, path.join('plugin', 'plugins'))
 # copy metadata
 shutil.copy(metadata_template, path.join('plugin', 'metadata.json'))
 # copy icon
-shutil.copytree(resources_path, path.join('plugin', 'resources'))
+shutil.copytree(resources_path, path.join('plugin', 'resources'), ignore=shutil.ignore_patterns('.DS_Store'))
 
 # load up json script
 with open(metadata_template) as f:
