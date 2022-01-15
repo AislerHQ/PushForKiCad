@@ -15,8 +15,11 @@ Once the upload (– which will only take a couple of seconds –) is complete y
 
 ![Demo of the swift upload process](docs/demo.gif)
 
-### Installation
-Download the latest release ZIP file from https://github.com/AislerHQ/PushForKiCad/releases, within KiCad open the "Plugin and Content Manager" from the main window. Install the ZIP file using "Install from File..." a the bottom of the window.
+### Installation from the official KiCad repositories
+Just open the "Plugin and Content Manager" from the KiCad main menu an install the "AISLER Push for KiCad" plugin from the selection list. That's it!
+
+### Manual installation
+If you prefere the latest version of this plugin, download the latest release ZIP file from https://github.com/AislerHQ/PushForKiCad/releases, within KiCad open the "Plugin and Content Manager" from the main window. Install the ZIP file using "Install from File..." a the bottom of the window.
 ![](docs/manual_installation.png)
 
 ### How do revisions work?
