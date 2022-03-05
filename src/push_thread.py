@@ -108,10 +108,15 @@ class PushThread(Thread):
                 2: 'smt'
             }.get(f.GetAttributes())
 
+            angle = f.GetOrientation()
+            try: # kicad >= 6.99
+                angle = angle.AsDegrees()
+            except AttributeError: # kicad <7
+                angle /= 10.0
             components.append({
                 'pos_x': (f.GetPosition()[0] - board.GetDesignSettings().GetAuxOrigin()[0]) / 1000000.0,
                 'pos_y': (f.GetPosition()[1] - board.GetDesignSettings().GetAuxOrigin()[1]) * -1.0 / 1000000.0,
-                'rotation': f.GetOrientation() / 10.0,
+                'rotation': angle,
                 'side': layer,
                 'designator': f.GetReference(),
                 'mpn': self.getMpnFromFootprint(f),
