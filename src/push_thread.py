@@ -50,6 +50,7 @@ class PushThread(Thread):
         try: # kicad >= 6.99
             popt.SetExcludeEdgeLayer(True)
         except AttributeError: # kicad <7
+            pass
             
         popt.SetUseGerberProtelExtensions(False)
         popt.SetUseAuxOrigin(True)
