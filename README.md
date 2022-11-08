@@ -22,6 +22,17 @@ Just open the "Plugin and Content Manager" from the KiCad main menu an install t
 If you prefere the latest version of this plugin, download the latest release ZIP file from https://github.com/AislerHQ/PushForKiCad/releases, within KiCad open the "Plugin and Content Manager" from the main window. Install the ZIP file using "Install from File..." a the bottom of the window.
 ![](docs/manual_installation.png)
 
+### Note for flatpak installations
+The KiCad flatpak does not contain the `requests` python module required by the plugin. In order to install the module, run the following commands:
+
+```bash
+flatpak run --command=sh org.kicad.KiCad
+python -m ensurepip --upgrade
+pip3 install requests
+```
+
+More information is given in the related [GitHub comment](https://github.com/Bouni/kicad-jlcpcb-tools/issues/94#issuecomment-1003599539).
+
 ### How do revisions work?
 On the initial push of a new layout, the plugin adds a comment to comment line 3 including a reference to the corresponding AISLER Project ID.
 ![Comment Line 3 added](docs/project_id.png)
