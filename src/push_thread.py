@@ -106,11 +106,11 @@ class PushThread(Thread):
                 pcbnew.B_Cu: 'bottom',
             }.get(f.GetLayer())
 
-            mount_type = {
-                0: 'smt',
-                1: 'tht',
-                2: 'smt'
-            }.get(f.GetAttributes())
+            attrs = f.GetAttributes()
+            parsed_attrs = self.parse_attrs(attrs)
+
+            mount_type = 'smt' if parsed_attrs['smd'] else 'tht'  # Note: if not smd nor tht its 'other'. Consider other as tht.
+            placed = not parsed_attrs['not_in_bom']
 
             angle = f.GetOrientation()
             try: # kicad >= 6.99
@@ -126,7 +126,9 @@ class PushThread(Thread):
                 'mpn': self.getMpnFromFootprint(f),
                 'pack': footprint_name,
                 'value': f.GetValue(),
-                'mount_type': mount_type
+                'mount_type': mount_type,
+                'place': placed
+
             })
 
         with open((os.path.join(temp_dir, componentsFilename)), 'w') as outfile:
@@ -172,3 +174,16 @@ class PushThread(Thread):
         for key in keys:
             if f.HasProperty(key):
                 return f.GetProperty(key)
+
+    def parse_attr_flag(self, attr, mask):
+        return mask == (attr & mask)
+
+    def parse_attrs(self, attrs):
+        return {} if not isinstance(attrs, int) else {
+            'tht': self.parse_attr_flag(attrs, pcbnew.FP_THROUGH_HOLE),
+            'smd': self.parse_attr_flag(attrs, pcbnew.FP_SMD),
+            'not_in_pos': self.parse_attr_flag(attrs, pcbnew.FP_EXCLUDE_FROM_POS_FILES),
+            'not_in_bom': self.parse_attr_flag(attrs, pcbnew.FP_EXCLUDE_FROM_BOM),
+            'not_in_plan': self.parse_attr_flag(attrs, pcbnew.FP_BOARD_ONLY)
+        }
+
