@@ -55,7 +55,7 @@ class PushThread(Thread):
         popt.SetUseGerberProtelExtensions(False)
         popt.SetUseAuxOrigin(True)
         popt.SetSubtractMaskFromSilk(False)
-        popt.SetDrillMarksType(DRILL_MARKS_NO_DRILL_SHAPE)
+        popt.SetDrillMarksType(pcbnew.DRILL_MARKS_NO_DRILL_SHAPE)
 
         self.report(15)
         for layer_info in plotPlan:
@@ -161,7 +161,7 @@ class PushThread(Thread):
             progress = json.loads(
                 requests.get(
                     urls['callback']).content)['progress']
-            self.report(40 + progress / 1.7)
+            self.report(int(40 + progress / 1.7))
 
         webbrowser.open(urls['redirect'])
         self.report(-1)
