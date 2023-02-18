@@ -55,7 +55,7 @@ class PushThread(Thread):
         popt.SetUseGerberProtelExtensions(False)
         popt.SetUseAuxOrigin(True)
         popt.SetSubtractMaskFromSilk(False)
-        popt.SetDrillMarksType(0)  # NO_DRILL_SHAPE
+        popt.SetDrillMarksType(DRILL_MARKS_NO_DRILL_SHAPE)
 
         self.report(15)
         for layer_info in plotPlan:

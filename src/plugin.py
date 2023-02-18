@@ -40,7 +40,7 @@ class PushToStatusForm(wx.Frame):
             pcbnew.Refresh()
             self.Destroy()
         else:
-            self.m_gaugeStatus.SetValue(status.data)
+            self.m_gaugeStatus.SetValue(int(status.data))
 
 
 class PushForKiCadPlugin(pcbnew.ActionPlugin):
