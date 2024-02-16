@@ -47,10 +47,6 @@ class PushThread(Thread):
         popt.SetScale(1)
         popt.SetMirror(False)
         popt.SetUseGerberAttributes(True)
-        try: # kicad >= 6.99
-            popt.SetExcludeEdgeLayer(True)
-        except AttributeError: # kicad <7
-            pass
             
         popt.SetUseGerberProtelExtensions(False)
         popt.SetUseAuxOrigin(True)
@@ -112,15 +108,10 @@ class PushThread(Thread):
             mount_type = 'smt' if parsed_attrs['smd'] else 'tht'  # Note: if not smd nor tht its 'other'. Consider other as tht.
             placed = not parsed_attrs['not_in_bom']
 
-            angle = f.GetOrientation()
-            try: # kicad >= 6.99
-                angle = angle.AsDegrees()
-            except AttributeError: # kicad <7
-                angle /= 10.0
             components.append({
                 'pos_x': (f.GetPosition()[0] - board.GetDesignSettings().GetAuxOrigin()[0]) / 1000000.0,
                 'pos_y': (f.GetPosition()[1] - board.GetDesignSettings().GetAuxOrigin()[1]) * -1.0 / 1000000.0,
-                'rotation': angle,
+                'rotation': f.GetOrientation().AsDegrees(),
                 'side': layer,
                 'designator': f.GetReference(),
                 'mpn': self.getMpnFromFootprint(f),
@@ -172,8 +163,8 @@ class PushThread(Thread):
     def getMpnFromFootprint(self, f):
         keys = ['mpn', 'MPN', 'Mpn', 'AISLER_MPN']
         for key in keys:
-            if f.HasProperty(key):
-                return f.GetProperty(key)
+            if f.HasFieldByName(key):
+                return f.GetFieldByName(key).GetText()
 
     def parse_attr_flag(self, attr, mask):
         return mask == (attr & mask)
