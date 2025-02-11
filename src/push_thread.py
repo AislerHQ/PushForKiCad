@@ -142,9 +142,13 @@ class PushThread(Thread):
                     'AISLER Project ID: ' +
                     data['project_id'])
 
+        title = title_block.GetTitle()
+        if title == '':
+            title = os.path.splitext(os.path.basename(board.GetFileName()))[0]
+
         rsp = requests.post(
             data['upload_url'], files=files, data={
-                'upload[title]': title_block.GetTitle()})
+                'upload[title]': title})
         urls = json.loads(rsp.content)
         progress = 0
         while progress < 100:
