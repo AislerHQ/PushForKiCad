@@ -127,6 +127,17 @@ class PushThread(Thread):
 
         # # Create ZIP file
         temp_file = shutil.make_archive(temp_file, 'zip', temp_dir)
+        props = board.GetProperties()
+        if props.has_key('aisler_export_locally'):
+            path = os.path.dirname(os.path.abspath(board.GetFileName()))
+            filename = "aisler_export_" + os.path.splitext(os.path.basename(board.GetFileName()))[0] + '.zip'
+            shutil.copy(temp_file, os.path.join(path, filename))
+            self.report(-1)
+        else:
+            self.push_to_webservice(temp_file, project_id, board)
+
+    def push_to_webservice(self, temp_file, project_id, board):
+        title_block = board.GetTitleBlock()
         files = {'upload[file]': open(temp_file, 'rb')}
 
         self.report(40)
