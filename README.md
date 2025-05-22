@@ -44,7 +44,8 @@ In order to speed up the development to production process we support the automa
 
 ### How to export data locally
 Due to company-wide firewall restrictions etc. the direct upload may not work. For this case it's possible to export all data locally as a ZIP file. This file can then be uploaded manually.
-To enable this option, open the "Board Setup", select "Text Variables" and add a new variable called "aisler_export_locally". The value itself doesn't matter. Now this is set the plugin will place a ZIP file next to the kicad_pcb file instead of uploading the file directly.
+To enable this option, open the "Board Setup", select "Text Variables" and add a new variable called "aisler_export_locally". The value itself specifies the directory relative to your project location. 
+If it is left empty, the plugin will place a ZIP file next to the kicad_pcb file instead of uploading the file directly. If you insert "\Fabrication" for example, the plugin creates the folder "Fabrication" next to the kicad_pcb file location and place the ZIP file in this folder.
 
 ### About AISLER
 AISLER makes hardware less hard by providing simple electronics manufacturing for everyone. We are based in Europe and focus on amazingly affordable prices, super swift delivery and outstanding customer support. We are KiCad Platinum Sponsor as we donate a significant amount of our revenues made from KiCad designs back to the project.
