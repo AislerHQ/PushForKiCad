@@ -43,9 +43,10 @@ In order to speed up the development to production process we support the automa
 ![Attribute list for MPNs](docs/mpn_assign.png)
 
 ### How to export data locally
-Due to company-wide firewall restrictions etc. the direct upload may not work. For this case it's possible to export all data locally as a ZIP file. This file can then be uploaded manually.
-To enable this option, open the "Board Setup", select "Text Variables" and add a new variable called "aisler_export_locally". The value itself specifies the directory relative to your project location. 
-If it is left empty, the plugin will place a ZIP file next to the kicad_pcb file instead of uploading the file directly. If you insert "\Fabrication" for example, the plugin creates the folder "Fabrication" next to the kicad_pcb file location and place the ZIP file in this folder.
+Due to company-wide firewall restrictions, direct upload may not work. In this case, it is possible to export all data locally as a ZIP file, which can then be uploaded manually.
+To enable this option, open the "Board Setup", select "Text Variables", and add a new variable called "aisler_export_locally". The value itself does not matter. Once this is set, the plugin will place a ZIP file next to the kicad_pcb file instead of uploading it directly.
+If you want to specify a custom location for the local export relative to the project directory, you can add another text variable called "aisler_local_export_path". The value of this variable specifies the target directory relative to your project location.
+If it is left empty, the plugin will place the ZIP file next to the kicad_pcb file. If you enter "\Fabrication", for example, the plugin will create a folder called "Fabrication" next to the kicad_pcb file and place the ZIP file in that folder.
 
 ### About AISLER
 AISLER makes hardware less hard by providing simple electronics manufacturing for everyone. We are based in Europe and focus on amazingly affordable prices, super swift delivery and outstanding customer support. We are KiCad Platinum Sponsor as we donate a significant amount of our revenues made from KiCad designs back to the project.
