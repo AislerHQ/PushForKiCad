@@ -20,7 +20,10 @@ class PushThread(Thread):
 
     def run(self):
         temp_dir = tempfile.mkdtemp()
-        _, temp_file = tempfile.mkstemp()
+        fd, temp_file = tempfile.mkstemp()
+        # close temporary created file to be able to delete it later
+        os.close(fd)
+        
         board = pcbnew.GetBoard()
         title_block = board.GetTitleBlock()
         self.report(10)
@@ -126,19 +129,35 @@ class PushThread(Thread):
             json.dump(components, outfile)
 
         # # Create ZIP file
-        temp_file = shutil.make_archive(temp_file, 'zip', temp_dir)
+        zip_file = shutil.make_archive(temp_file, 'zip', temp_dir)
         props = board.GetProperties()
-        if props.has_key('aisler_export_locally'):
-            path = os.path.dirname(os.path.abspath(board.GetFileName()))
+        if props.has_key('aisler_local_export_path'):
+            if props['aisler_local_export_path'] is not '':
+                path = os.path.dirname(os.path.abspath(board.GetFileName())) + '/' + props['aisler_local_export_path']
+                path = os.path.normpath(path)
+                if not os.path.isdir(path):
+                    os.makedirs(path)
+            else:
+                path = os.path.dirname(os.path.abspath(board.GetFileName()))                
             filename = "aisler_export_" + os.path.splitext(os.path.basename(board.GetFileName()))[0] + '.zip'
-            shutil.copy(temp_file, os.path.join(path, filename))
+            shutil.copy(zip_file, os.path.join(path, filename))
+            self.report(-1)
+        elif props.has_key('aisler_export_locally'):
+            path = os.path.dirname(os.path.abspath(board.GetFileName()))                
+            filename = "aisler_export_" + os.path.splitext(os.path.basename(board.GetFileName()))[0] + '.zip'
+            shutil.copy(zip_file, os.path.join(path, filename))
             self.report(-1)
         else:
-            self.push_to_webservice(temp_file, project_id, board)
+            self.push_to_webservice(zip_file, project_id, board)
+            
+        # delete temporary data 
+        os.remove(zip_file)
+        os.remove(temp_file)
+        shutil.rmtree(temp_dir, ignore_errors = True)
 
-    def push_to_webservice(self, temp_file, project_id, board):
+    def push_to_webservice(self, zip_file, project_id, board):
         title_block = board.GetTitleBlock()
-        files = {'upload[file]': open(temp_file, 'rb')}
+        files = {'upload[file]': open(zip_file, 'rb')}
 
         self.report(40)
         if project_id:
