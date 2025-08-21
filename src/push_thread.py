@@ -108,7 +108,11 @@ class PushThread(Thread):
             attrs = f.GetAttributes()
             parsed_attrs = self.parse_attrs(attrs)
 
-            mount_type = 'smt' if parsed_attrs['smd'] else 'tht'  # Note: if not smd nor tht its 'other'. Consider other as tht.
+            # Ignore logos and mounting holes
+            if parsed_attrs['not_in_bom']:
+                continue
+
+            mount_type = 'smt' if parsed_attrs['smd'] else 'tht'  # If not smd nor tht it iss 'other'. Consider other as tht.
             placed = not parsed_attrs['do_not_place']
 
             components.append({
