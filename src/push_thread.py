@@ -109,7 +109,7 @@ class PushThread(Thread):
             parsed_attrs = self.parse_attrs(attrs)
 
             mount_type = 'smt' if parsed_attrs['smd'] else 'tht'  # Note: if not smd nor tht its 'other'. Consider other as tht.
-            placed = not parsed_attrs['not_in_bom']
+            placed = not parsed_attrs['do_not_place']
 
             components.append({
                 'pos_x': (f.GetPosition()[0] - board.GetDesignSettings().GetAuxOrigin()[0]) / 1000000.0,
@@ -122,7 +122,6 @@ class PushThread(Thread):
                 'value': f.GetValue(),
                 'mount_type': mount_type,
                 'place': placed
-
             })
 
         with open((os.path.join(temp_dir, componentsFilename)), 'w') as outfile:
@@ -209,6 +208,7 @@ class PushThread(Thread):
             'smd': self.parse_attr_flag(attrs, pcbnew.FP_SMD),
             'not_in_pos': self.parse_attr_flag(attrs, pcbnew.FP_EXCLUDE_FROM_POS_FILES),
             'not_in_bom': self.parse_attr_flag(attrs, pcbnew.FP_EXCLUDE_FROM_BOM),
-            'not_in_plan': self.parse_attr_flag(attrs, pcbnew.FP_BOARD_ONLY)
+            'not_in_plan': self.parse_attr_flag(attrs, pcbnew.FP_BOARD_ONLY),
+            'do_not_place': self.parse_attr_flag(attrs, pcbnew.FP_DNP)
         }
 
