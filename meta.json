@@ -25,5 +25,12 @@
     "license": "MIT",
     "resources": {
         "homepage": "https://github.com/aislerhq/PushForKiCad"
-    }
+    },
+    "versions": [
+        {
+            "version": "0.2.4",
+            "status": "stable",
+            "kicad_version": "8.00"
+        }
+    ]
 }
