@@ -51,6 +51,6 @@ If it is left empty, the plugin will place the ZIP file next to the kicad_pcb fi
 ### About AISLER
 AISLER makes hardware less hard by providing simple electronics manufacturing for everyone. We are based in Europe and focus on amazingly affordable prices, super swift delivery and outstanding customer support. We are KiCad Platinum Sponsor as we donate a significant amount of our revenues made from KiCad designs back to the project.
 
-[![AISLER Logo](https://aisler.net/logos/logo_medium.png)](https://aisler.net?mtm_campaign=github_pushforkicad)
+[![AISLER Logo](https://aisler.net/logos/AISLER_Logo.svg)](https://aisler.net?mtm_campaign=github_pushforkicad)
 
 [![KiCad Platinum Sponsor](https://cdn.aisler.net/packs/static/412c42e887d5762109ea.png)](https://aisler.net?mtm_campaign=github_pushforkicad)
