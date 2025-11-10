@@ -197,8 +197,8 @@ class PushThread(Thread):
     def getMpnFromFootprint(self, f):
         keys = ['mpn', 'MPN', 'Mpn', 'AISLER_MPN']
         for key in keys:
-            if f.HasFieldByName(key):
-                return f.GetFieldByName(key).GetText()
+            if f.HasField(key):
+                return f.GetField(key).GetText()
 
     def parse_attr_flag(self, attr, mask):
         return mask == (attr & mask)
