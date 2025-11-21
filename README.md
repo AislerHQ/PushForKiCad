@@ -1,5 +1,5 @@
 # AISLER Push for KiCad
-### Push your layout to AISLER with just one click for instant Powerful Prototyping
+## Push your layout to AISLER with just one click for instant Powerful Prototyping
 
 Want to use Powerful Prototyping or Amazing Assembly from AISLER? This plugin will provide you with a convenient one-click push to our service.
 
@@ -15,12 +15,23 @@ Once the upload (– which will only take a couple of seconds –) is complete y
 
 ![Demo of the swift upload process](docs/demo.gif)
 
-### Installation from the official KiCad repositories
-Just open the "Plugin and Content Manager" from the KiCad main menu an install the "AISLER Push for KiCad" plugin from the selection list. That's it!
+## Installation 
+### Installation through AISLER's Package Server (PCM)
+We frequently update our plugin to accomodate downstream changes in KiCad. To always get the latest updates, we recommend to install AISLER's Lovely Library through our Package Server which integrates into the KiCad Plugin and Content Manager (PCM). It is very simple to setup if you follow these steps.
 
-### Manual installation
-If you prefere the latest version of this plugin, download the latest release ZIP file from https://github.com/AislerHQ/PushForKiCad/releases, within KiCad open the "Plugin and Content Manager" from the main window. Install the ZIP file using "Install from File..." a the bottom of the window.
-![](docs/manual_installation.png)
+#### 1. Setting Up an additional package repository in the PCM (you only have to do this once)
+<img src="docs/PCM_step1.png">
+Add our package server using the "Manage button", add a new package server with the following url: https://packages.aisler.net
+
+#### 2. Install the Lovely Library plugin
+<img src="docs/PCM_Install_PushForKiCad_Step2.png">
+Select the "Fabrication plugins" tab in the PCM and select the Push For KiCad to install it.
+
+### Static installation (not recommended if you want to fetch updates automatically)
+1. Download the [Release] (https://github.com/AislerHQ/PushForKiCad/releases) from the releases page. 
+2. In KiCad, open the PCM in the main overview Window.
+3. Install the library by selecting the ```.zip``` file trough "Install from File". 
+4. You're Done!
 
 ### Note for flatpak installations
 The KiCad flatpak does not contain the `requests` python module required by the plugin. In order to install the module, run the following commands:
@@ -33,6 +44,7 @@ pip3 install requests
 
 More information is given in the related [GitHub comment](https://github.com/Bouni/kicad-jlcpcb-tools/issues/94#issuecomment-1003599539).
 
+## Usage
 ### How do revisions work?
 On the initial push of a new layout, the plugin adds a comment to comment line 3 including a reference to the corresponding AISLER Project ID.
 ![Comment Line 3 added](docs/project_id.png)
@@ -48,9 +60,11 @@ To enable this option, open the "Board Setup", select "Text Variables", and add 
 If you want to specify a custom location for the local export relative to the project directory, you can add another text variable called "aisler_local_export_path". The value of this variable specifies the target directory relative to your project location.
 If it is left empty, the plugin will place the ZIP file next to the kicad_pcb file. If you enter "\Fabrication", for example, the plugin will create a folder called "Fabrication" next to the kicad_pcb file and place the ZIP file in that folder.
 
-### About AISLER
-AISLER makes hardware less hard by providing simple electronics manufacturing for everyone. We are based in Europe and focus on amazingly affordable prices, super swift delivery and outstanding customer support. We are KiCad Platinum Sponsor as we donate a significant amount of our revenues made from KiCad designs back to the project.
+## About AISLER
+![AISLER logo](https://aisler.net/logos/AISLER_Logo_m.png)
 
-[![AISLER Logo](https://aisler.net/logos/logo_medium.png)](https://aisler.net?mtm_campaign=github_pushforkicad)
+AISLER PushForKiCad is developed and funded by AISLER B.V.
 
-[![KiCad Platinum Sponsor](https://cdn.aisler.net/packs/static/412c42e887d5762109ea.png)](https://aisler.net?mtm_campaign=github_pushforkicad)
+AISLER makes hardware less hard by providing simple electronics manufacturing for everyone. We are based in Europe and focus on amazingly affordable prices, super swift delivery and outstanding customer support. We are KiCad Platinum Sponsor as we donate a significant amount of our revenues made from KiCad designs back to the project. 
+
+Looking for quick and affordable manufacturing for your Electronic Project? Visit us at [AISLER](https://aisler.net)
