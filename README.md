@@ -68,3 +68,5 @@ AISLER PushForKiCad is developed and funded by AISLER B.V.
 AISLER makes hardware less hard by providing simple electronics manufacturing for everyone. We are based in Europe and focus on amazingly affordable prices, super swift delivery and outstanding customer support. We are KiCad Platinum Sponsor as we donate a significant amount of our revenues made from KiCad designs back to the project. 
 
 Looking for quick and affordable manufacturing for your Electronic Project? Visit us at [AISLER](https://aisler.net)
+
+[![KiCad Platinum Sponsor](https://github.com/user-attachments/assets/c646d8fb-916f-4905-a0bc-4574feabf176)](https://aisler.net?mtm_campaign=github_pushforkicad)
