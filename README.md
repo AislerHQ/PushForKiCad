@@ -23,7 +23,7 @@ We frequently update our plugin to accomodate downstream changes in KiCad. To al
 <img src="docs/PCM_step1.png">
 Add our package server using the "Manage button", add a new package server with the following url: https://packages.aisler.net
 
-#### 2. Install the Lovely Library plugin
+#### 2. Install the Push for KiCad plugin
 <img src="docs/PCM_Install_PushForKiCad_Step2.png">
 Select the "Fabrication plugins" tab in the PCM and select the Push For KiCad to install it.
 
