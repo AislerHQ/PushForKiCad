@@ -6,6 +6,8 @@ commentLineIdx = 3
 pollingInterval = 0.5
 netlistFilename = 'netlist.ipc'
 componentsFilename = 'components.json'
+odbFilename = 'odb'
+magicFilename = '.kicad-push'
 plotPlan = [
     ("F.Cu", pcbnew.F_Cu, "Top Layer"),
     ("B.Cu", pcbnew.B_Cu, "Bottom Layer"),

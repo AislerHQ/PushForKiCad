@@ -128,6 +128,10 @@ class PushThread(Thread):
         with open((os.path.join(temp_dir, componentsFilename)), 'w') as outfile:
             json.dump(components, outfile)
 
+        self.exportODB(board, os.path.join(temp_dir, odbFilename), 'zip')
+
+        open(magicFilename, 'a').close()
+
         # # Create ZIP file
         zip_file = shutil.make_archive(temp_file, 'zip', temp_dir)
         props = board.GetProperties()
@@ -199,6 +203,18 @@ class PushThread(Thread):
         for key in keys:
             if f.HasFieldByName(key):
                 return f.GetFieldByName(key).GetText()
+
+    def exportODB(board, outputFilename, compression):
+        odbTmpFolder = tempfile.mkdtemp()
+
+        # Parameters defined by PCB_IO_ODBPP::SaveBoard in https://gitlab.com/kicad/code/kicad/-/blob/master/pcbnew/pcb_io/odbpp/pcb_io_odbpp.cpp
+        properties = str_utf8_Map()
+        properties['units'] = UTF8('mm')
+        properties['sigfig'] = UTF8('6')
+        PCB_IO_MGR.Save(PCB_IO_MGR.ODBPP, odbTmpFolder, board, properties)
+
+        shutil.make_archive(outputFilename, compression, odbTmpFolder)
+        shutil.rmtree(odbTmpFolder, ignore_errors = True)
 
     def parse_attr_flag(self, attr, mask):
         return mask == (attr & mask)
