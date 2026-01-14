@@ -171,32 +171,40 @@ class PushThread(Thread):
             rsp = requests.get(baseUrl + '/p/new.json?ref=KiCadPush')
             data = json.loads(rsp.content)
             if not title_block.GetComment(commentLineIdx):
-                title_block.SetComment(
-                    commentLineIdx,
-                    'AISLER Project ID: ' +
-                    data['project_id'])
+                title_block.SetComment(commentLineIdx, 'AISLER Project ID: ' + data['project_id'])
 
         title = title_block.GetTitle()
         if title == '':
             title = os.path.splitext(os.path.basename(board.GetFileName()))[0]
 
-        rsp = requests.post(
-            data['upload_url'], files=files, data={
-                'upload[title]': title})
+        rsp = requests.post(data['upload_url'], files=files, data={ 'upload[title]': title })
         urls = json.loads(rsp.content)
         progress = 0
+        message = ''
         while progress < 100:
             time.sleep(pollingInterval)
-            progress = json.loads(
-                requests.get(
-                    urls['callback']).content)['progress']
-            self.report(int(40 + progress / 1.7))
+            status = None
+            try:
+                status = requests.get(urls['callback']).json()
+            except requests.exceptions.JSONDecodeError:
+                progress = -1
+                message = 'Your existing project could not be found. Did you delete it? Remove the reference and try again'
+                break
 
-        webbrowser.open(urls['redirect'])
-        self.report(-1)
+            progress = status['progress']
+            message = status['message']
+            if progress == -1:
+                break
+            self.report(progress, message)
 
-    def report(self, status):
-        wx.PostEvent(self.wxObject, ResultEvent(status))
+        self.report(-1, message)
+
+        if progress != -1:
+            webbrowser.open(urls['redirect'])
+
+
+    def report(self, progress, message=''):
+        wx.PostEvent(self.wxObject, ResultEvent(progress))
         
     def getMpnFromFootprint(self, f):
         keys = ['mpn', 'MPN', 'Mpn', 'AISLER_MPN']
@@ -204,14 +212,14 @@ class PushThread(Thread):
             if f.HasFieldByName(key):
                 return f.GetFieldByName(key).GetText()
 
-    def exportODB(board, outputFilename, compression):
+    def exportODB(self, board, outputFilename, compression):
         odbTmpFolder = tempfile.mkdtemp()
 
         # Parameters defined by PCB_IO_ODBPP::SaveBoard in https://gitlab.com/kicad/code/kicad/-/blob/master/pcbnew/pcb_io/odbpp/pcb_io_odbpp.cpp
-        properties = str_utf8_Map()
-        properties['units'] = UTF8('mm')
-        properties['sigfig'] = UTF8('6')
-        PCB_IO_MGR.Save(PCB_IO_MGR.ODBPP, odbTmpFolder, board, properties)
+        properties = pcbnew.str_utf8_Map()
+        properties['units'] = pcbnew.UTF8('mm')
+        properties['sigfig'] = pcbnew.UTF8('6')
+        pcbnew.PCB_IO_MGR.Save(pcbnew.PCB_IO_MGR.ODBPP, odbTmpFolder, board, properties)
 
         shutil.make_archive(outputFilename, compression, odbTmpFolder)
         shutil.rmtree(odbTmpFolder, ignore_errors = True)
