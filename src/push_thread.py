@@ -197,14 +197,14 @@ class PushThread(Thread):
                 break
             self.report(progress, message)
 
-        self.report(-1, message)
+        self.report(progress, message)
 
         if progress != -1:
             webbrowser.open(urls['redirect'])
 
 
-    def report(self, progress, message=''):
-        wx.PostEvent(self.wxObject, ResultEvent(progress))
+    def report(self, progress, message=None):
+        wx.PostEvent(self.wxObject, ResultEvent(progress, message))
         
     def getMpnFromFootprint(self, f):
         keys = ['mpn', 'MPN', 'Mpn', 'AISLER_MPN']
