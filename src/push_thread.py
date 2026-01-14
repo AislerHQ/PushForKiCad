@@ -136,7 +136,7 @@ class PushThread(Thread):
         zip_file = shutil.make_archive(temp_file, 'zip', temp_dir)
         props = board.GetProperties()
         if props.has_key('aisler_local_export_path'):
-            if props['aisler_local_export_path'] is not '':
+            if props['aisler_local_export_path'] != '':
                 path = os.path.dirname(os.path.abspath(board.GetFileName())) + '/' + props['aisler_local_export_path']
                 path = os.path.normpath(path)
                 if not os.path.isdir(path):
