@@ -128,11 +128,13 @@ class PushThread(Thread):
         with open((os.path.join(temp_dir, componentsFilename)), 'w') as outfile:
             json.dump(components, outfile)
 
+        self.report(40)
         self.exportODB(board, os.path.join(temp_dir, odbFilename), 'zip')
 
         open(magicFilename, 'a').close()
 
         # # Create ZIP file
+        self.report(50)
         zip_file = shutil.make_archive(temp_file, 'zip', temp_dir)
         props = board.GetProperties()
         if props.has_key('aisler_local_export_path'):
@@ -161,9 +163,8 @@ class PushThread(Thread):
 
     def push_to_webservice(self, zip_file, project_id, board):
         title_block = board.GetTitleBlock()
-        files = {'upload[file]': open(zip_file, 'rb')}
 
-        self.report(40)
+        self.report(60, 'Uploading...')
         if project_id:
             data = {}
             data['upload_url'] = baseUrl + '/p/' + project_id + '/uploads.json'
@@ -177,6 +178,7 @@ class PushThread(Thread):
         if title == '':
             title = os.path.splitext(os.path.basename(board.GetFileName()))[0]
 
+        files = {'upload[file]': open(zip_file, 'rb')}
         rsp = requests.post(data['upload_url'], files=files, data={ 'upload[title]': title })
         urls = json.loads(rsp.content)
         progress = 0
