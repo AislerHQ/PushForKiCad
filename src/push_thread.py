@@ -180,7 +180,15 @@ class PushThread(Thread):
 
         files = {'upload[file]': open(zip_file, 'rb')}
         rsp = requests.post(data['upload_url'], files=files, data={ 'upload[title]': title })
+
+        # Explicitly handle deleted projects
+        if rsp.status_code == 404:
+            message = 'Your AISLER project could not be found. Did you delete it or start over? Then remove the reference from the comment block and push again.'
+            self.report(-1, message)
+            return
+
         urls = json.loads(rsp.content)
+
         progress = 0
         message = ''
         while progress < 100:
@@ -190,7 +198,7 @@ class PushThread(Thread):
                 status = requests.get(urls['callback']).json()
             except requests.exceptions.JSONDecodeError:
                 progress = -1
-                message = 'Your existing project could not be found. Did you delete it? Remove the reference and try again'
+                message = 'We encountered an unexpected error. Please push again and contact the support if the error persists.'
                 break
 
             progress = status['progress']
