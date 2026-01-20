@@ -6,29 +6,34 @@ from .result_event import *
 
 
 class PushToStatusForm(wx.Frame):
+    WIDTH = 300
+
     def __init__(self):
         wx.Dialog.__init__(
             self,
             None,
             id=wx.ID_ANY,
-            title=u"AISLER Push in progress...",
+            title=u"AISLER Push",
             pos=wx.DefaultPosition,
             size=wx.DefaultSize,
             style=wx.DEFAULT_DIALOG_STYLE)
 
         self.SetSizeHints(wx.DefaultSize, wx.DefaultSize)
 
-        bSizer1 = wx.BoxSizer(wx.VERTICAL)
+        self.m_sizer = wx.BoxSizer(wx.VERTICAL)
 
         self.m_gaugeStatus = wx.Gauge(
             self, wx.ID_ANY, 100, wx.DefaultPosition, wx.Size(
-                300, 20), wx.GA_HORIZONTAL)
+                PushToStatusForm.WIDTH, 20), wx.GA_HORIZONTAL)
         self.m_gaugeStatus.SetValue(0)
-        bSizer1.Add(self.m_gaugeStatus, 0, wx.ALL, 5)
+        self.m_sizer.Add(self.m_gaugeStatus, 0, wx.ALL, 5)
+        self.m_textStatus = wx.StaticText(self, wx.ID_ANY, u"Generating manufacturing assets...")
+        self.m_textStatus.Wrap(PushToStatusForm.WIDTH)
+        self.m_sizer.Add(self.m_textStatus, 0, wx.ALL, 5)
 
-        self.SetSizer(bSizer1)
+        self.SetSizer(self.m_sizer)
         self.Layout()
-        bSizer1.Fit(self)
+        self.m_sizer.Fit(self)
 
         self.Centre(wx.BOTH)
 
@@ -36,12 +41,15 @@ class PushToStatusForm(wx.Frame):
         PushThread(self)
 
     def updateDisplay(self, status):
-        if status.data == -1:
+        if status.progress == 100:
             pcbnew.Refresh()
             self.Destroy()
-        else:
-            self.m_gaugeStatus.SetValue(status.data)
-
+        if status.progress != -1:
+            self.m_gaugeStatus.SetValue(status.progress)
+        if status.message != None:
+            self.m_textStatus.SetLabel(status.message)
+            self.m_textStatus.Wrap(PushToStatusForm.WIDTH)
+            self.m_sizer.Fit(self)
 
 class PushForKiCadPlugin(pcbnew.ActionPlugin):
     def __init__(self):
