@@ -5,51 +5,6 @@ from .push_thread import *
 from .result_event import *
 
 
-class PushToUpdateNoticeForm(wx.Frame):
-    WIDTH = 400
-
-    def __init__(self):
-        wx.Dialog.__init__(
-            self,
-            None,
-            id=wx.ID_ANY,
-            title="AISLER Push Update Notice",
-            pos=wx.DefaultPosition,
-            size=wx.DefaultSize,
-            style=wx.DEFAULT_DIALOG_STYLE,
-        )
-
-        self.SetSizeHints(wx.DefaultSize, wx.DefaultSize)
-
-        self.m_sizer = wx.BoxSizer(wx.VERTICAL)
-
-        self.m_textHeader = wx.StaticText(self, wx.ID_ANY, "Update Notice")
-        self.m_textHeader.Wrap(PushToUpdateNoticeForm.WIDTH)
-        self.m_sizer.Add(self.m_textHeader, 0, wx.ALL, 10)
-
-        self.m_textNotice = wx.StaticText(
-            self,
-            wx.ID_ANY,
-            "This is the last release published on the official KiCad repository. Please add AISLER's KiCad Repository to stay up-to-date.",
-        )
-        self.m_textNotice.Wrap(PushToUpdateNoticeForm.WIDTH)
-        self.m_sizer.Add(self.m_textNotice, 0, wx.ALL, 20)
-
-        self.m_button = wx.Button(self, wx.ID_ANY, "Continue")
-        self.m_button.Bind(wx.EVT_BUTTON, self.confirmUpdateNotice)
-        self.m_sizer.Add(self.m_button, 0, wx.ALL, 10)
-
-        self.SetSizer(self.m_sizer)
-        self.Layout()
-        self.m_sizer.Fit(self)
-
-        self.Centre(wx.BOTH)
-
-    def confirmUpdateNotice(self, event=None):
-        PushToStatusForm().Show()
-        self.Destroy()
-
-
 class PushToStatusForm(wx.Frame):
     WIDTH = 300
 
@@ -116,4 +71,4 @@ class PushForKiCadPlugin(pcbnew.ActionPlugin):
         self.description = "Push current layout to AISLER"
 
     def Run(self):
-        PushToUpdateNoticeForm().Show()
+        PushToStatusForm().Show()
