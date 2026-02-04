@@ -1,34 +1,92 @@
+import pcbnew
 import wx
 
-import pcbnew
 from .push_thread import *
 from .result_event import *
 
 
-class PushToStatusForm(wx.Frame):
+class PushToUpdateNoticeForm(wx.Frame):
+    WIDTH = 400
+
     def __init__(self):
         wx.Dialog.__init__(
             self,
             None,
             id=wx.ID_ANY,
-            title=u"AISLER Push in progress...",
+            title="AISLER Push Update Notice",
             pos=wx.DefaultPosition,
             size=wx.DefaultSize,
-            style=wx.DEFAULT_DIALOG_STYLE)
+            style=wx.DEFAULT_DIALOG_STYLE,
+        )
 
         self.SetSizeHints(wx.DefaultSize, wx.DefaultSize)
 
-        bSizer1 = wx.BoxSizer(wx.VERTICAL)
+        self.m_sizer = wx.BoxSizer(wx.VERTICAL)
+
+        self.m_textHeader = wx.StaticText(self, wx.ID_ANY, "Update Notice")
+        self.m_textHeader.Wrap(PushToUpdateNoticeForm.WIDTH)
+        self.m_sizer.Add(self.m_textHeader, 0, wx.ALL, 10)
+
+        self.m_textNotice = wx.StaticText(
+            self,
+            wx.ID_ANY,
+            "This is the last release published on the official KiCad repository. Please add AISLER's KiCad Repository to stay up-to-date.",
+        )
+        self.m_textNotice.Wrap(PushToUpdateNoticeForm.WIDTH)
+        self.m_sizer.Add(self.m_textNotice, 0, wx.ALL, 20)
+
+        self.m_button = wx.Button(self, wx.ID_ANY, "Continue")
+        self.m_button.Bind(wx.EVT_BUTTON, self.confirmUpdateNotice)
+        self.m_sizer.Add(self.m_button, 0, wx.ALL, 10)
+
+        self.SetSizer(self.m_sizer)
+        self.Layout()
+        self.m_sizer.Fit(self)
+
+        self.Centre(wx.BOTH)
+
+    def confirmUpdateNotice(self, event=None):
+        PushToStatusForm().Show()
+        self.Destroy()
+
+
+class PushToStatusForm(wx.Frame):
+    WIDTH = 300
+
+    def __init__(self):
+        wx.Dialog.__init__(
+            self,
+            None,
+            id=wx.ID_ANY,
+            title="AISLER Push",
+            pos=wx.DefaultPosition,
+            size=wx.DefaultSize,
+            style=wx.DEFAULT_DIALOG_STYLE,
+        )
+
+        self.SetSizeHints(wx.DefaultSize, wx.DefaultSize)
+
+        self.m_sizer = wx.BoxSizer(wx.VERTICAL)
 
         self.m_gaugeStatus = wx.Gauge(
-            self, wx.ID_ANY, 100, wx.DefaultPosition, wx.Size(
-                300, 20), wx.GA_HORIZONTAL)
+            self,
+            wx.ID_ANY,
+            100,
+            wx.DefaultPosition,
+            wx.Size(PushToStatusForm.WIDTH, 10),
+            wx.GA_HORIZONTAL,
+        )
         self.m_gaugeStatus.SetValue(0)
-        bSizer1.Add(self.m_gaugeStatus, 0, wx.ALL, 5)
+        self.m_sizer.Add(self.m_gaugeStatus, 0, wx.ALL, 10)
+        self.m_textStatus = wx.StaticText(
+            self, wx.ID_ANY, "Generating manufacturing assets..."
+        )
+        self.m_textStatus.Wrap(PushToStatusForm.WIDTH)
+        self.m_sizer.Add(self.m_textStatus, 0, wx.ALL, 10)
 
-        self.SetSizer(bSizer1)
+        self.SetSizer(self.m_sizer)
         self.Layout()
-        bSizer1.Fit(self)
+        self.m_sizer.Fit(self)
 
         self.Centre(wx.BOTH)
 
@@ -36,24 +94,26 @@ class PushToStatusForm(wx.Frame):
         PushThread(self)
 
     def updateDisplay(self, status):
-        if status.data == -1:
+        if status.progress == 100:
             pcbnew.Refresh()
             self.Destroy()
-        else:
-            self.m_gaugeStatus.SetValue(status.data)
+        if status.progress != -1:
+            self.m_gaugeStatus.SetValue(status.progress)
+        if status.message != None:
+            self.m_textStatus.SetLabel(status.message)
+            self.m_textStatus.Wrap(PushToStatusForm.WIDTH)
+            self.m_sizer.Fit(self)
 
 
 class PushForKiCadPlugin(pcbnew.ActionPlugin):
     def __init__(self):
-        self.name = 'Push layout to AISLER'
+        self.name = "Push layout to AISLER"
         self.category = "Manufacturing"
         self.pcbnew_icon_support = hasattr(self, "show_toolbar_button")
         self.show_toolbar_button = True
-        self.icon_file_name = os.path.join(
-            os.path.dirname(__file__), 'icon.png')
-        self.dark_icon_file_name = os.path.join(
-            os.path.dirname(__file__), 'icon.png')
+        self.icon_file_name = os.path.join(os.path.dirname(__file__), "icon.png")
+        self.dark_icon_file_name = os.path.join(os.path.dirname(__file__), "icon.png")
         self.description = "Push current layout to AISLER"
 
     def Run(self):
-        PushToStatusForm().Show()
+        PushToUpdateNoticeForm().Show()

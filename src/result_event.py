@@ -12,8 +12,9 @@ def EVT_RESULT(win, func):
 class ResultEvent(wx.PyEvent):
     """Simple event to carry arbitrary result data."""
 
-    def __init__(self, data):
+    def __init__(self, progress, message):
         """Init Result Event."""
         wx.PyEvent.__init__(self)
         self.SetEventType(EVT_RESULT_ID)
-        self.data = data
+        self.progress = progress
+        self.message = message

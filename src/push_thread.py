@@ -131,11 +131,17 @@ class PushThread(Thread):
         with open((os.path.join(temp_dir, componentsFilename)), 'w') as outfile:
             json.dump(components, outfile)
 
+        self.report(40)
+        self.exportODB(board, os.path.join(temp_dir, odbFilename), 'zip')
+
+        open(magicFilename, 'a').close()
+
         # # Create ZIP file
+        self.report(50)
         zip_file = shutil.make_archive(temp_file, 'zip', temp_dir)
         props = board.GetProperties()
         if props.has_key('aisler_local_export_path'):
-            if props['aisler_local_export_path'] is not '':
+            if props['aisler_local_export_path'] != '':
                 path = os.path.dirname(os.path.abspath(board.GetFileName())) + '/' + props['aisler_local_export_path']
                 path = os.path.normpath(path)
                 if not os.path.isdir(path):
@@ -160,9 +166,8 @@ class PushThread(Thread):
 
     def push_to_webservice(self, zip_file, project_id, board):
         title_block = board.GetTitleBlock()
-        files = {'upload[file]': open(zip_file, 'rb')}
 
-        self.report(40)
+        self.report(60, 'Uploading...')
         if project_id:
             data = {}
             data['upload_url'] = baseUrl + '/p/' + project_id + '/uploads.json'
@@ -170,38 +175,67 @@ class PushThread(Thread):
             rsp = requests.get(baseUrl + '/p/new.json?ref=KiCadPush')
             data = json.loads(rsp.content)
             if not title_block.GetComment(commentLineIdx):
-                title_block.SetComment(
-                    commentLineIdx,
-                    'AISLER Project ID: ' +
-                    data['project_id'])
+                title_block.SetComment(commentLineIdx, 'AISLER Project ID: ' + data['project_id'])
 
         title = title_block.GetTitle()
         if title == '':
             title = os.path.splitext(os.path.basename(board.GetFileName()))[0]
 
-        rsp = requests.post(
-            data['upload_url'], files=files, data={
-                'upload[title]': title})
+        files = {'upload[file]': open(zip_file, 'rb')}
+        rsp = requests.post(data['upload_url'], files=files, data={ 'upload[title]': title })
+
+        # Explicitly handle deleted projects
+        if rsp.status_code == 404:
+            message = 'Your AISLER project could not be found. Did you delete it or start over? Then remove the reference from the comment block and push again.'
+            self.report(-1, message)
+            return
+
         urls = json.loads(rsp.content)
+
         progress = 0
+        message = ''
         while progress < 100:
             time.sleep(pollingInterval)
-            progress = json.loads(
-                requests.get(
-                    urls['callback']).content)['progress']
-            self.report(int(40 + progress / 1.7))
+            status = None
+            try:
+                status = requests.get(urls['callback']).json()
+            except requests.exceptions.JSONDecodeError:
+                progress = -1
+                message = 'We encountered an unexpected error. Please push again and contact the support if the error persists.'
+                break
 
-        webbrowser.open(urls['redirect'])
-        self.report(-1)
+            progress = status['progress']
+            message = status['message']
+            if progress == -1:
+                break
+            self.report(progress, message)
 
-    def report(self, status):
-        wx.PostEvent(self.wxObject, ResultEvent(status))
+        self.report(progress, message)
+
+        if progress != -1:
+            webbrowser.open(urls['redirect'])
+
+
+    def report(self, progress, message=None):
+        wx.PostEvent(self.wxObject, ResultEvent(progress, message))
         
     def getMpnFromFootprint(self, f):
         keys = ['mpn', 'MPN', 'Mpn', 'AISLER_MPN']
         for key in keys:
             if f.HasFieldByName(key):
                 return f.GetFieldByName(key).GetText()
+
+    def exportODB(self, board, outputFilename, compression):
+        odbTmpFolder = tempfile.mkdtemp()
+
+        # Parameters defined by PCB_IO_ODBPP::SaveBoard in https://gitlab.com/kicad/code/kicad/-/blob/master/pcbnew/pcb_io/odbpp/pcb_io_odbpp.cpp
+        properties = pcbnew.str_utf8_Map()
+        properties['units'] = pcbnew.UTF8('mm')
+        properties['sigfig'] = pcbnew.UTF8('6')
+        pcbnew.PCB_IO_MGR.Save(pcbnew.PCB_IO_MGR.ODBPP, odbTmpFolder, board, properties)
+
+        shutil.make_archive(outputFilename, compression, odbTmpFolder)
+        shutil.rmtree(odbTmpFolder, ignore_errors = True)
 
     def parse_attr_flag(self, attr, mask):
         return mask == (attr & mask)
