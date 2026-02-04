@@ -66,8 +66,10 @@ class PushForKiCadPlugin(pcbnew.ActionPlugin):
         self.category = "Manufacturing"
         self.pcbnew_icon_support = hasattr(self, "show_toolbar_button")
         self.show_toolbar_button = True
-        self.icon_file_name = os.path.join(os.path.dirname(__file__), "icon.png")
-        self.dark_icon_file_name = os.path.join(os.path.dirname(__file__), "icon.png")
+        self.icon_file_name = os.path.join(os.path.dirname(__file__), "ui_icon.png")
+        self.dark_icon_file_name = os.path.join(
+            os.path.dirname(__file__), "ui_icon.png"
+        )
         self.description = "Push current layout to AISLER"
 
     def Run(self):
