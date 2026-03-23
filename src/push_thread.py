@@ -89,11 +89,7 @@ class PushThread(Thread):
         # # Export component list
         self.report(30)
         components = []
-        if hasattr(board, 'GetModules'):
-            footprints = list(board.GetModules())
-        else:
-            footprints = list(board.GetFootprints())
-
+        footprints = list(board.GetFootprints())
         for i, f in enumerate(footprints):
             footprint_name = str(f.GetFPID().GetLibItemName())
 
