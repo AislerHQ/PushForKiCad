@@ -52,7 +52,7 @@ class PushThread(Thread):
         popt.SetUseGerberAttributes(True)
 
         popt.SetUseGerberProtelExtensions(False)
-        popt.SetUseAuxOrigin(True)
+        popt.SetUseAuxOrigin(False)
         popt.SetSubtractMaskFromSilk(False)
         popt.SetDrillMarksType(pcbnew.DRILL_MARKS_NO_DRILL_SHAPE)
 
@@ -113,8 +113,8 @@ class PushThread(Thread):
             placed = not parsed_attrs['do_not_place']
 
             components.append({
-                'pos_x': (f.GetPosition()[0] - board.GetDesignSettings().GetAuxOrigin()[0]) / 1000000.0,
-                'pos_y': (f.GetPosition()[1] - board.GetDesignSettings().GetAuxOrigin()[1]) * -1.0 / 1000000.0,
+                'pos_x': f.GetPosition()[0] / 1000000.0,
+                'pos_y': f.GetPosition()[1] * -1.0 / 1000000.0,
                 'rotation': f.GetOrientation().AsDegrees(),
                 'side': layer,
                 'designator': f.GetReference(),
