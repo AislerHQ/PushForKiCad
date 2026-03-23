@@ -23,7 +23,7 @@ class PushThread(Thread):
         fd, temp_file = tempfile.mkstemp()
         # close temporary created file to be able to delete it later
         os.close(fd)
-        
+
         board = pcbnew.GetBoard()
         title_block = board.GetTitleBlock()
         self.report(10)
@@ -50,7 +50,7 @@ class PushThread(Thread):
         popt.SetScale(1)
         popt.SetMirror(False)
         popt.SetUseGerberAttributes(True)
-            
+
         popt.SetUseGerberProtelExtensions(False)
         popt.SetUseAuxOrigin(True)
         popt.SetSubtractMaskFromSilk(False)
@@ -95,10 +95,7 @@ class PushThread(Thread):
             footprints = list(board.GetFootprints())
 
         for i, f in enumerate(footprints):
-            try:
-                footprint_name = str(f.GetFPID().GetFootprintName())
-            except AttributeError:
-                footprint_name = str(f.GetFPID().GetLibItemName())
+            footprint_name = str(f.GetFPID().GetLibItemName())
 
             layer = {
                 pcbnew.F_Cu: 'top',
@@ -147,19 +144,19 @@ class PushThread(Thread):
                 if not os.path.isdir(path):
                     os.makedirs(path)
             else:
-                path = os.path.dirname(os.path.abspath(board.GetFileName()))                
+                path = os.path.dirname(os.path.abspath(board.GetFileName()))
             filename = "aisler_export_" + os.path.splitext(os.path.basename(board.GetFileName()))[0] + '.zip'
             shutil.copy(zip_file, os.path.join(path, filename))
             self.report(-1)
         elif props.has_key('aisler_export_locally'):
-            path = os.path.dirname(os.path.abspath(board.GetFileName()))                
+            path = os.path.dirname(os.path.abspath(board.GetFileName()))
             filename = "aisler_export_" + os.path.splitext(os.path.basename(board.GetFileName()))[0] + '.zip'
             shutil.copy(zip_file, os.path.join(path, filename))
             self.report(-1)
         else:
             self.push_to_webservice(zip_file, project_id, board)
-            
-        # delete temporary data 
+
+        # delete temporary data
         os.remove(zip_file)
         os.remove(temp_file)
         shutil.rmtree(temp_dir, ignore_errors = True)
@@ -218,12 +215,12 @@ class PushThread(Thread):
 
     def report(self, progress, message=None):
         wx.PostEvent(self.wxObject, ResultEvent(progress, message))
-        
+
     def getMpnFromFootprint(self, f):
         keys = ['mpn', 'MPN', 'Mpn', 'AISLER_MPN']
         for key in keys:
-            if f.HasFieldByName(key):
-                return f.GetFieldByName(key).GetText()
+            if f.HasField(key):
+                return f.GetField(key).GetText()
 
     def exportODB(self, board, outputFilename, compression):
         odbTmpFolder = tempfile.mkdtemp()
@@ -249,4 +246,3 @@ class PushThread(Thread):
             'not_in_plan': self.parse_attr_flag(attrs, pcbnew.FP_BOARD_ONLY),
             'do_not_place': self.parse_attr_flag(attrs, pcbnew.FP_DNP)
         }
-
