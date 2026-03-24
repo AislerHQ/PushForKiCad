@@ -89,9 +89,19 @@ class PushThread(Thread):
         # # Export component list
         self.report(30)
         components = []
-        footprints = list(board.GetFootprints())
+        if hasattr(board, 'GetModules'):
+            # KiCAD < 10.0
+            footprints = list(board.GetModules())
+        else:
+            # KiCAD >= 10.0
+            footprints = list(board.GetFootprints())
         for i, f in enumerate(footprints):
-            footprint_name = str(f.GetFPID().GetLibItemName())
+            try:
+                # KiCAD < 10.0
+                footprint_name = str(f.GetFPID().GetFootprintName())
+            except AttributeError:
+                # KiCAD >= 10.0
+                footprint_name = str(f.GetFPID().GetLibItemName())
 
             layer = {
                 pcbnew.F_Cu: 'top',
@@ -215,7 +225,11 @@ class PushThread(Thread):
     def getMpnFromFootprint(self, f):
         keys = ['mpn', 'MPN', 'Mpn', 'AISLER_MPN']
         for key in keys:
+            if f.HasFieldByName(key):
+                # KiCAD < 10.0
+                return f.GetFieldByName(key).GetText()
             if f.HasField(key):
+                # KiCAD >= 10.0
                 return f.GetField(key).GetText()
 
     def exportODB(self, board, outputFilename, compression):
