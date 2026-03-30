@@ -7,7 +7,7 @@ Want to use Powerful Prototyping or Amazing Assembly from AISLER? This plugin wi
 When you click the AISLER Push-Button we will export your project's
 
 - Gerber Files in the right format, so that production will run ultra-smooth
-- IPC-Netlist-File to enable Smart Tests for production so that you get feedback down to the tiniest trace on how to improve your design for production
+- ODB++ file, as primary source for everything related to our Smart Tests and assembly services
 - BOM-file to import all components you have already assigned in your project 
 - P'n'P-file to get your project ready for assembly
 
@@ -17,22 +17,22 @@ Once the upload (– which will only take a couple of seconds –) is complete y
 
 ## Installation 
 ### Installation through AISLER's Package Server (PCM)
-We frequently update our plugin to accomodate downstream changes in KiCad. To always get the latest updates, we recommend to install AISLER's Lovely Library through our Package Server which integrates into the KiCad Plugin and Content Manager (PCM). It is very simple to setup if you follow these steps.
+We frequently update our plugin to accomodate downstream changes in KiCad. To always get the latest updates, we recommend to install the plugin through our Package Server which integrates into the KiCad Plugin and Content Manager (PCM). It is very simple to setup if you follow these steps.
 
 #### 1. Setting Up an additional package repository in the PCM (you only have to do this once)
 ![Manage repositories](docs/manage_repositories.png)
-Add our package server using the "Manage button", add a new package server with the following url: https://packages.aisler.net
+Add our package server using the "Manage button", add a new package server with the following url: https://packages.aisler.net  
 ![Add new repository](docs/add_repository.png)
 ![Add new repository](docs/add_repository_input.png)
 ![Save repository](docs/save_repository.png)
 
 #### 3. Select the AISLER KiCad Repository
-Finally switch from the official KiCad Repository to AISLER's KiCad Repository. This will leave all other plugins etc. untouched.
+Finally switch from the official KiCad Repository to AISLER's KiCad Repository. This will leave all other plugins etc. untouched.  
 ![Save repository](docs/save_repository.png)
 
 #### 2. Install the Push for KiCad plugin
+Select the "Fabrication plugins" tab in the PCM and select the Push For KiCad to install it.  
 ![Install the plugin](docs/repository_view.png)
-Select the "Fabrication plugins" tab in the PCM and select the Push For KiCad to install it.
 
 ### Note for flatpak installations
 The KiCad flatpak does not contain the `requests` python module required by the plugin. In order to install the module, run the following commands:
@@ -47,12 +47,12 @@ More information is given in the related [GitHub comment](https://github.com/Bou
 
 ## Usage
 ### How do revisions work?
-On the initial push of a new layout, the plugin adds a comment to comment line 3 including a reference to the corresponding AISLER Project ID.
+On the initial push of a new layout, the plugin adds a comment to comment line 3 including a reference to the corresponding AISLER Project ID.  
 ![Comment Line 3 added](docs/project_id.png)
 Each further push will add the current layout to the project as a new revision. If this is not desired, just remove the comment and a new project will be created.
 
 ### How to automatically assign parts?
-In order to speed up the development to production process we support the automated matching of parts. Just add a property named either "Mpn", "MPN", "mpn" or "AISLER_MPN" to your schematic symbol properties and use the MPN of the part as value.
+In order to speed up the development to production process we support the automated matching of parts. Just add a property named either "Mpn", "MPN", "mpn" or "AISLER_MPN" to your schematic symbol properties and use the MPN of the part as value.  
 ![Attribute list for MPNs](docs/mpn_assign.png)
 
 ### How to export data locally
