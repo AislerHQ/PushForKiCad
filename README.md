@@ -20,18 +20,19 @@ Once the upload (– which will only take a couple of seconds –) is complete y
 We frequently update our plugin to accomodate downstream changes in KiCad. To always get the latest updates, we recommend to install AISLER's Lovely Library through our Package Server which integrates into the KiCad Plugin and Content Manager (PCM). It is very simple to setup if you follow these steps.
 
 #### 1. Setting Up an additional package repository in the PCM (you only have to do this once)
-<img src="docs/PCM_step1.png">
+![Manage repositories](docs/manage_repositories.png)
 Add our package server using the "Manage button", add a new package server with the following url: https://packages.aisler.net
+![Add new repository](docs/add_repository.png)
+![Add new repository](docs/add_repository_input.png)
+![Save repository](docs/save_repository.png)
+
+#### 3. Select the AISLER KiCad Repository
+Finally switch from the official KiCad Repository to AISLER's KiCad Repository. This will leave all other plugins etc. untouched.
+![Save repository](docs/save_repository.png)
 
 #### 2. Install the Push for KiCad plugin
-<img src="docs/PCM_Install_PushForKiCad_Step2.png">
+![Install the plugin](docs/repository_view.png)
 Select the "Fabrication plugins" tab in the PCM and select the Push For KiCad to install it.
-
-### Static installation (not recommended if you want to fetch updates automatically)
-1. Download the [Release] (https://github.com/AislerHQ/PushForKiCad/releases) from the releases page. 
-2. In KiCad, open the PCM in the main overview Window.
-3. Install the library by selecting the ```.zip``` file trough "Install from File". 
-4. You're Done!
 
 ### Note for flatpak installations
 The KiCad flatpak does not contain the `requests` python module required by the plugin. In order to install the module, run the following commands:
