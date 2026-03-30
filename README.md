@@ -1,8 +1,8 @@
 # AISLER Push for KiCad
-## Push your layout to AISLER with just one click for instant Powerful Prototyping
+**Push your layout to AISLER with just one click for quick and affordable manufacturing for your
+Electronic Project**
 
 Want to use Powerful Prototyping or Amazing Assembly from AISLER? This plugin will provide you with a convenient one-click push to our service.
-
 
 When you click the AISLER Push-Button we will export your project's
 
@@ -12,8 +12,6 @@ When you click the AISLER Push-Button we will export your project's
 - P'n'P-file to get your project ready for assembly
 
 Once the upload (– which will only take a couple of seconds –) is complete you can place your order within less than one minute. If you iterate on your design and click the push button again, we will make sure your project is stored as a new revision of that same project on our server.
-
-![Demo of the swift upload process](docs/demo.gif)
 
 ## Installation 
 ### Installation through AISLER's Package Server (PCM)
