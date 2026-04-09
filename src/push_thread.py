@@ -76,7 +76,7 @@ class PushThread(Thread):
         drlwriter.SetOptions(
             False,
             True,
-            board.GetDesignSettings().GetAuxOrigin(),
+            pcbnew.VECTOR2I(0, 0),
             False)
         drlwriter.SetFormat(False)
         drlwriter.CreateDrillandMapFilesSet(pctl.GetPlotDirName(), True, False)
