@@ -26,7 +26,7 @@ Add our package server using the "Manage button", add a new package server with 
 
 #### 3. Select the AISLER KiCad Repository
 Finally switch from the official KiCad Repository to AISLER's KiCad Repository. This will leave all other plugins etc. untouched.  
-![Save repository](docs/save_repository.png)
+![Save repository](docs/select_repository.png)
 
 #### 2. Install the Push for KiCad plugin
 Select the "Fabrication plugins" tab in the PCM and select the Push For KiCad to install it.  
