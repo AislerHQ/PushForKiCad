@@ -179,7 +179,7 @@ class PushThread(Thread):
 
         # Explicitly handle deleted projects
         if rsp.status_code == 404:
-            message = 'Your AISLER project could not be found. Did you delete it or start over? Then remove the reference from the comment block and push again.'
+            message = 'Your AISLER project could not be found. Did you delete it or start over? If so, remove the reference from the comment block in PCB Page Settings and push again.'
             self.report(-1, message)
             return
 
